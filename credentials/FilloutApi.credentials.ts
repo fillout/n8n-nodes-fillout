@@ -14,23 +14,23 @@ export class FilloutApi implements ICredentialType {
     },
     {
       displayName: "Base URL",
-      name: "domain",
+      name: "baseUrl",
       type: "options",
       options: [
         {
-          name: "api.fillout.com",
-          value: "api.fillout.com",
+          name: "https://api.fillout.com/v1/api",
+          value: "https://api.fillout.com/v1/api",
         },
         {
-          name: "eu-api.fillout.com",
-          value: "eu-api.fillout.com",
+          name: "https://eu-api.fillout.com/v1/api",
+          value: "https://eu-api.fillout.com/v1/api",
         },
         {
-          name: "ca-api.fillout.com",
-          value: "ca-api.fillout.com",
+          name: "https://ca-api.fillout.com/v1/api",
+          value: "https://ca-api.fillout.com/v1/api",
         },
       ],
-      default: "api.fillout.com",
+      default: "https://api.fillout.com/v1/api",
       description:
         "This may be different if your Fillout account data is stored in another region",
     },

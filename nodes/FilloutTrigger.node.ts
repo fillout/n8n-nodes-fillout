@@ -55,14 +55,14 @@ export class FilloutTrigger implements INodeType {
       async getForms(
         this: ILoadOptionsFunctions
       ): Promise<INodePropertyOptions[]> {
-        const { apiKey, domain } = await this.getCredentials("filloutApi");
+        const { apiKey, baseUrl } = await this.getCredentials("filloutApi");
 
         const forms: any[] = await this.helpers.request({
           headers: {
             Authorization: `Bearer ${apiKey}`,
           },
           method: "GET",
-          uri: `https://${domain}/v1/api/forms`,
+          uri: `${baseUrl}/forms`,
           json: true,
         });
 
@@ -83,7 +83,7 @@ export class FilloutTrigger implements INodeType {
       },
 
       async create(this: IHookFunctions): Promise<boolean> {
-        const { apiKey, domain } = await this.getCredentials("filloutApi");
+        const { apiKey, baseUrl } = await this.getCredentials("filloutApi");
 
         const webhookData = this.getWorkflowStaticData("node");
         if (webhookData.webhookId !== undefined) {
@@ -101,7 +101,7 @@ export class FilloutTrigger implements INodeType {
             "Content-Type": "application/json",
           },
           method: "POST",
-          uri: `https://${domain}/v1/api/webhook/create`,
+          uri: `${baseUrl}/webhook/create`,
           body: { formId, url: webhookUrl },
           json: true,
         });
@@ -112,7 +112,7 @@ export class FilloutTrigger implements INodeType {
       },
 
       async delete(this: IHookFunctions): Promise<boolean> {
-        const { apiKey, domain } = await this.getCredentials("filloutApi");
+        const { apiKey, baseUrl } = await this.getCredentials("filloutApi");
 
         const webhookData = this.getWorkflowStaticData("node");
         if (webhookData.webhookId === undefined) {
@@ -127,7 +127,7 @@ export class FilloutTrigger implements INodeType {
             "Content-Type": "application/json",
           },
           method: "POST",
-          uri: `https://${domain}/v1/api/webhook/delete`,
+          uri: `${baseUrl}/webhook/delete`,
           body: { webhookId: webhookData.webhookId },
           json: true,
         });
