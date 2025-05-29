@@ -20,7 +20,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf dist && tsc && cp fillout.svg dist/nodes",
+    "build": "rm -rf dist && tsc && cp fillout.svg dist/nodes/FilloutTrigger",
     "dev": "tsc --watch",
     "format": "prettier nodes credentials --write",
     "lint": "eslint nodes credentials package.json",
