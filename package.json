@@ -1,5 +1,5 @@
 {
-  "name": "@fillout/n8n",
+  "name": "n8n-nodes-fillout",
   "private": true,
   "version": "1.0.0",
   "description": "n8n trigger for Fillout submissions",
@@ -10,6 +10,10 @@
   "author": {
     "name": "Fillout",
     "url": "https://fillout.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fillout/n8n-nodes-fillout.git"
   },
   "engines": {
     "node": ">=20.15"
