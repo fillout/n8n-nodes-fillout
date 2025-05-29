@@ -1,0 +1,14 @@
+{
+  "node": "n8n-nodes-base.filloutTrigger",
+  "nodeVersion": "1.0",
+  "codexVersion": "1.0",
+  "categories": ["Communication"],
+  "resources": {
+    "credentialDocumentation": [
+      {
+        "url": "https://build.fillout.com/home/settings/developer"
+      }
+    ]
+  },
+  "alias": ["Form"]
+}
