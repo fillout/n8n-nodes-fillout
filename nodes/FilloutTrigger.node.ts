@@ -4,6 +4,8 @@ import {
   INodePropertyOptions,
   INodeType,
   INodeTypeDescription,
+  IWebhookFunctions,
+  IWebhookResponseData,
   NodeConnectionType,
 } from "n8n-workflow";
 
