@@ -1,9 +1,4 @@
-import {
-  IAuthenticateGeneric,
-  ICredentialTestRequest,
-  ICredentialType,
-  INodeProperties,
-} from "n8n-workflow";
+import { ICredentialType, INodeProperties } from "n8n-workflow";
 
 export class FilloutApi implements ICredentialType {
   name = "filloutApi";
