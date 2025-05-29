@@ -138,4 +138,25 @@ export class FilloutTrigger implements INodeType {
       },
     },
   };
+
+  async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
+    try {
+      const body: any = this.getBodyData();
+      const { submission } = JSON.parse(body);
+
+      return {
+        workflowData: [this.helpers.returnJsonArray([submission])],
+      };
+    } catch (error) {
+      console.error("[Fillout] webhook error:", error);
+
+      return {
+        workflowData: [
+          this.helpers.returnJsonArray([
+            { error: "Error processing webhook data" },
+          ]),
+        ],
+      };
+    }
+  }
 }
