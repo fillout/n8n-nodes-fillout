@@ -8,6 +8,7 @@ import {
   IWebhookResponseData,
   NodeConnectionType,
 } from "n8n-workflow";
+import type { FilloutSubmission } from "@fillout/api";
 
 export class FilloutTrigger implements INodeType {
   description: INodeTypeDescription = {
@@ -142,10 +143,26 @@ export class FilloutTrigger implements INodeType {
   async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
     try {
       const body: any = this.getBodyData();
-      const { submission } = JSON.parse(body);
+      const submission: FilloutSubmission = JSON.parse(body).submission;
+
+      // strip widget type out for readability
+      const questions = submission.questions.map((_question) => {
+        const { type, ...question } = _question;
+        return question;
+      });
+
+      const transformedSubmission: { [k in keyof FilloutSubmission]?: any } = {
+        ...submission,
+        questions: transformArrayToIdMap(questions),
+        calculations: transformArrayToIdMap(submission.calculations),
+        documents: transformArrayToIdMap(submission.documents),
+        scheduling: transformArrayToIdMap(submission.scheduling),
+        payments: transformArrayToIdMap(submission.payments),
+        urlParameters: transformArrayToIdMap(submission.urlParameters),
+      };
 
       return {
-        workflowData: [this.helpers.returnJsonArray([submission])],
+        workflowData: [this.helpers.returnJsonArray([transformedSubmission])],
       };
     } catch (error) {
       console.error("[Fillout] webhook error:", error);
@@ -160,3 +177,16 @@ export class FilloutTrigger implements INodeType {
     }
   }
 }
+
+const transformArrayToIdMap = <T extends { id: string }>(
+  arr: T[] | undefined
+) => {
+  if (!arr) return {};
+
+  return Object.fromEntries(
+    arr.map((item) => {
+      const { id, ...etc } = item;
+      return [id, etc];
+    })
+  );
+};
