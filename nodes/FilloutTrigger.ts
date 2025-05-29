@@ -76,16 +76,23 @@ export class FilloutTrigger implements INodeType {
     default: {
       async checkExists(this: IHookFunctions) {
         const webhookData = this.getWorkflowStaticData("node");
+        console.log("[Fillout] webhook checkExists:", webhookData.webhookId);
         return webhookData.webhookId !== undefined;
       },
 
       async create(this: IHookFunctions): Promise<boolean> {
         const { apiKey, domain } = await this.getCredentials("filloutApi");
 
-        const webhookUrl = this.getNodeWebhookUrl("default");
         const webhookData = this.getWorkflowStaticData("node");
+        if (webhookData.webhookId !== undefined) {
+          console.log("[Fillout] webhook already created, no changes");
+          return true;
+        }
+
+        const webhookUrl = this.getNodeWebhookUrl("default");
         const formId = this.getNodeParameter("form") as string;
 
+        console.log("[Fillout] creating webhook...");
         const data = await this.helpers.request({
           headers: {
             Authorization: `Bearer ${apiKey}`,
@@ -97,6 +104,7 @@ export class FilloutTrigger implements INodeType {
           json: true,
         });
 
+        console.log("[Fillout] created webhook", data.id);
         webhookData.webhookId = data.id;
         return true;
       },
@@ -105,7 +113,12 @@ export class FilloutTrigger implements INodeType {
         const { apiKey, domain } = await this.getCredentials("filloutApi");
 
         const webhookData = this.getWorkflowStaticData("node");
+        if (webhookData.webhookId === undefined) {
+          console.log("[Fillout] webhook already deleted, no changes");
+          return true;
+        }
 
+        console.log("[Fillout] deleting webhook...");
         await this.helpers.request({
           headers: {
             Authorization: `Bearer ${apiKey}`,
@@ -117,6 +130,7 @@ export class FilloutTrigger implements INodeType {
           json: true,
         });
 
+        console.log("[Fillout] deleted webhook", webhookData.webhookId);
         delete webhookData.webhookId;
         return true;
       },
