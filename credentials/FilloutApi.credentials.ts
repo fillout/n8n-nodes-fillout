@@ -1,4 +1,9 @@
-import { ICredentialType, INodeProperties } from "n8n-workflow";
+import {
+  IAuthenticateGeneric,
+  ICredentialTestRequest,
+  ICredentialType,
+  INodeProperties,
+} from "n8n-workflow";
 
 export class FilloutApi implements ICredentialType {
   name = "filloutApi";
@@ -35,4 +40,20 @@ export class FilloutApi implements ICredentialType {
         "This may be different if your Fillout account data is stored in another region",
     },
   ];
+
+  authenticate: IAuthenticateGeneric = {
+    type: "generic",
+    properties: {
+      headers: {
+        Authorization: '={{"Bearer " + $credentials.apiKey}}',
+      },
+    },
+  };
+
+  test: ICredentialTestRequest = {
+    request: {
+      baseURL: "={{$credentials?.baseUrl}}",
+      url: "/test",
+    },
+  };
 }
