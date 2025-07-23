@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-fillout",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "n8n trigger for Fillout submissions",
   "keywords": [
     "n8n-community-node-package"
@@ -35,7 +35,7 @@
       "dist/credentials/FilloutApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/FilloutTrigger.node.js"
+      "dist/nodes/FilloutTrigger/FilloutTrigger.node.js"
     ]
   },
   "devDependencies": {
