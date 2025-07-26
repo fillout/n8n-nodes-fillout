@@ -7,6 +7,7 @@ import {
   IWebhookFunctions,
   IWebhookResponseData,
   NodeConnectionType,
+  NodeOperationError,
 } from "n8n-workflow";
 import type { FilloutSubmission } from "@fillout/api";
 
@@ -81,7 +82,6 @@ export class FilloutTrigger implements INodeType {
     default: {
       async checkExists(this: IHookFunctions) {
         const webhookData = this.getWorkflowStaticData("node");
-        console.log("[Fillout] webhook checkExists:", webhookData.webhookId);
         return webhookData.webhookId !== undefined;
       },
 
@@ -90,14 +90,12 @@ export class FilloutTrigger implements INodeType {
 
         const webhookData = this.getWorkflowStaticData("node");
         if (webhookData.webhookId !== undefined) {
-          console.log("[Fillout] webhook already created, no changes");
           return true;
         }
 
         const webhookUrl = this.getNodeWebhookUrl("default");
         const formId = this.getNodeParameter("form") as string;
 
-        console.log("[Fillout] creating webhook...");
         const data = await this.helpers.request({
           headers: {
             Authorization: `Bearer ${apiKey}`,
@@ -109,7 +107,6 @@ export class FilloutTrigger implements INodeType {
           json: true,
         });
 
-        console.log("[Fillout] created webhook", data.id);
         webhookData.webhookId = data.id;
         return true;
       },
@@ -119,11 +116,9 @@ export class FilloutTrigger implements INodeType {
 
         const webhookData = this.getWorkflowStaticData("node");
         if (webhookData.webhookId === undefined) {
-          console.log("[Fillout] webhook already deleted, no changes");
           return true;
         }
 
-        console.log("[Fillout] deleting webhook...");
         await this.helpers.request({
           headers: {
             Authorization: `Bearer ${apiKey}`,
@@ -135,7 +130,6 @@ export class FilloutTrigger implements INodeType {
           json: true,
         });
 
-        console.log("[Fillout] deleted webhook", webhookData.webhookId);
         delete webhookData.webhookId;
         return true;
       },
@@ -167,15 +161,7 @@ export class FilloutTrigger implements INodeType {
         workflowData: [this.helpers.returnJsonArray([transformedSubmission])],
       };
     } catch (error) {
-      console.error("[Fillout] webhook error:", error);
-
-      return {
-        workflowData: [
-          this.helpers.returnJsonArray([
-            { error: "Error processing webhook data" },
-          ]),
-        ],
-      };
+      throw new NodeOperationError(this.getNode(), error);
     }
   }
 }
